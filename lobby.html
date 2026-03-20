@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="sk"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Lobby | CardScoresPro</title><style>
+:root{
+  --bg:#000;--panel:#0b0b0b;--panel-2:#111;--line:rgba(255,255,255,.10);--line-2:rgba(255,255,255,.06);
+  --white:#f5f5f5;--muted:rgba(255,255,255,.78);--gold:#f0d98a;--green-1:#5a9a38;--green-2:#2f6724;--turnaj:#70c44e;
+}
+*{box-sizing:border-box;margin:0;padding:0} html,body{min-height:100%}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden}
+a{color:inherit;text-decoration:none} button,input,select,textarea{font:inherit} button{cursor:pointer}
+.page{min-height:100vh;background:#000}.wrap{width:min(1380px,calc(100% - 40px));margin:0 auto}
+.header{padding:18px 0 0}.header-top,.header-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.header-top{padding-bottom:16px}.header-bottom{padding:0 0 16px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}.logo{width:42px;height:42px;border-radius:6px;background:#fff;color:#caa23d;display:grid;place-items:center;font-weight:900;font-size:.84rem;flex:0 0 auto}
+.brand-title{color:var(--gold);font-size:clamp(1.6rem,2vw,2.1rem);font-weight:900;letter-spacing:-.04em;white-space:nowrap}
+.auth{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.auth a{font-size:.98rem;font-weight:600;color:rgba(255,255,255,.94);white-space:nowrap}
+.menu{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.menu-link,.btn,.lang{min-height:44px;padding:0 16px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:.95rem;font-weight:700}
+.menu-link{color:rgba(255,255,255,.96);padding-inline:8px}.btn,.lang{border:1px solid var(--line);background:rgba(12,12,12,.72);color:#fff}
+.btn-premium{background:linear-gradient(180deg, rgba(90,154,56,.98), rgba(47,103,36,.98));color:var(--gold);border-color:rgba(212,175,55,.34)}
+.btn-turnaj{color:var(--turnaj);background:rgba(14,10,8,.8);border-color:rgba(212,175,55,.2)} .lang-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hero{min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;text-align:center;padding:64px 0 88px}
+.hero-box{width:100%;max-width:760px;display:flex;flex-direction:column;align-items:center}
+.headline{color:var(--gold);font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.8rem,4.8vw,4.2rem);line-height:.95;letter-spacing:-.05em;font-weight:700}
+.subline{margin-top:20px;color:var(--muted);font-size:clamp(1.02rem,1.7vw,1.35rem);line-height:1.45;max-width:720px}
+.hero-cta{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.hero-btn{min-height:46px;padding:0 18px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.94rem;font-weight:700;border:1px solid rgba(212,175,55,.34);background:linear-gradient(180deg, rgba(90,154,56,.98), rgba(47,103,36,.98));color:var(--gold)}
+.section{padding:32px 0}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.panel+.panel{margin-top:18px}
+.panel-title{font-size:1.2rem;font-weight:800;color:var(--gold);margin-bottom:12px}.grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.field{display:grid;gap:8px}label{font-size:.9rem;color:var(--muted);font-weight:600}
+input,select,textarea{width:100%;min-height:44px;border-radius:8px;border:1px solid var(--line);background:#080808;color:#fff;padding:0 12px}
+textarea{min-height:100px;padding:12px;resize:vertical}.helper{color:var(--muted);font-size:.88rem}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.list{display:grid;gap:10px}.item{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line-2);background:var(--panel-2);padding:12px 14px;border-radius:10px}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:#080808;color:var(--muted);font-size:.8rem;font-weight:700}
+.table-card{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:16px;display:grid;gap:12px}.table-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.table-name{font-size:1.05rem;font-weight:800}
+.player-chip{border:1px solid var(--line-2);background:var(--panel-2);border-radius:8px;padding:10px 12px}.score-row{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center}.actions-row{display:flex;gap:10px;flex-wrap:wrap}
+.empty{padding:18px;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}.success{color:#98db7d}.footer-note{padding:16px 0 32px;color:rgba(255,255,255,.55);font-size:.88rem}
+@media (max-width:900px){.wrap{width:min(1380px,calc(100% - 24px))}.header-top,.header-bottom{flex-direction:column;align-items:flex-start}.grid-2{grid-template-columns:1fr}.hero{min-height:auto;padding:56px 0 72px}.hero-box{align-items:flex-start;text-align:left}}
+@media (max-width:640px){.menu{display:grid;grid-template-columns:1fr 1fr;width:100%}.menu-link,.btn,.lang{width:100%}.lang-group{display:grid;grid-template-columns:1fr 1fr;width:100%}.grid-3{grid-template-columns:1fr}.score-row{grid-template-columns:1fr}}
+</style></head><body>
+<div class="page"><div class="wrap">
+<header class="header">
+<div class="header-top"><div class="brand"><div class="logo">CP</div><div class="brand-title">CardScoresPro</div></div><div class="auth"><a href="index.html">Home</a><a href="tables.html">Stoly</a></div></div>
+<div class="header-bottom"><nav class="menu"><a class="menu-link" href="index.html">🏠 Home</a><a class="menu-link" href="lobby.html">Lobby</a><a class="btn btn-turnaj" href="tables.html">🂠 Turnajové stoly</a><a class="btn" href="#search">⌕ Search</a><div class="lang-group"><a class="lang" href="#">SK</a><a class="lang" href="#">EN</a></div></nav></div>
+</header>
+<section class="section"><div class="grid-2">
+<div class="panel"><div class="panel-title">Lobby turnaja</div>
+<div class="grid-3">
+<div class="field"><label for="tournamentName">Názov turnaja</label><input id="tournamentName" placeholder="Napr. Žolíkový večer Prievidza"/></div>
+<div class="field"><label for="tableCount">Počet stolov</label><select id="tableCount"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+<div class="field"><label for="roundCount">Počet kôl</label><select id="roundCount"><option>3</option><option selected>4</option><option>5</option><option>6</option></select></div>
+</div>
+<div class="field" style="margin-top:14px"><label for="playersInput">Hráči (jeden na riadok)</label><textarea id="playersInput" placeholder="Tomáš P.&#10;Marek K.&#10;Ján L.&#10;Roman M."></textarea></div>
+<div class="actions-row" style="margin-top:14px"><button class="btn btn-premium" id="saveTournament">Uložiť lobby</button><button class="btn btn-turnaj" id="generateTables">Rozdeliť na stoly</button><button class="btn" id="clearTournament">Vymazať</button></div>
+<p class="helper" style="margin-top:10px">Po kliknutí na „Rozdeliť na stoly“ sa vytvorí funkčný prechod do turnajových stolov.</p></div>
+<div class="panel"><div class="panel-title">Aktuálny stav</div><div id="statusBox" class="empty">Turnaj ešte nie je pripravený.</div><div class="actions-row" style="margin-top:14px"><a class="btn btn-turnaj" href="tables.html">Otvoriť stoly</a></div></div>
+</div></section>
+<section class="section" id="search"><div class="panel"><div class="panel-title">Hráči v lobby</div><div id="playersList" class="list"></div></div></section>
+<div class="footer-note">Táto stránka ukladá údaje do localStorage, takže po nasadení na GitHub Pages bude fungovať bez backendu.</div>
+</div></div>
+<script>
+function getTournament(){try{return JSON.parse(localStorage.getItem('csp_tournament')||'null')}catch(e){return null}}
+function setTournament(data){localStorage.setItem('csp_tournament', JSON.stringify(data))}
+function ensureTournament(){const t=getTournament(); if(!t){alert('Turnaj ešte nie je pripravený. Najprv ho vytvor v lobby.'); window.location.href='lobby.html'; return null;} return t;}
+
+function normalizePlayers(text){return text.split(/\n+/).map(v=>v.trim()).filter(Boolean)}
+function buildTables(players, tableCount){
+  const tables=Array.from({length:tableCount},(_,i)=>({id:i+1,name:`Stôl ${i+1}`,players:[],rounds:[]}));
+  players.forEach((player,i)=>tables[i%tableCount].players.push(player));
+  return tables;
+}
+function renderStatus(t){
+  const status=document.getElementById('statusBox');
+  const playersList=document.getElementById('playersList');
+  playersList.innerHTML='';
+  if(!t){status.className='empty'; status.textContent='Turnaj ešte nie je pripravený.'; return;}
+  status.className='panel';
+  status.innerHTML=`<div class="list">
+    <div class="item"><strong>Názov</strong><span>${t.name}</span></div>
+    <div class="item"><strong>Hráči</strong><span>${t.players.length}</span></div>
+    <div class="item"><strong>Stoly</strong><span>${t.tableCount}</span></div>
+    <div class="item"><strong>Kolá</strong><span>${t.roundCount}</span></div>
+  </div>`;
+  t.players.forEach((player,idx)=>{const el=document.createElement('div'); el.className='item'; el.innerHTML=`<span>${idx+1}. ${player}</span><span class="badge">Lobby</span>`; playersList.appendChild(el);});
+}
+function loadForm(){
+  const t=getTournament();
+  if(!t) return renderStatus(null);
+  document.getElementById('tournamentName').value=t.name||'';
+  document.getElementById('tableCount').value=String(t.tableCount||2);
+  document.getElementById('roundCount').value=String(t.roundCount||4);
+  document.getElementById('playersInput').value=(t.players||[]).join('\n');
+  renderStatus(t);
+}
+document.getElementById('saveTournament').addEventListener('click',()=>{
+  const name=document.getElementById('tournamentName').value.trim()||'Nový turnaj';
+  const tableCount=Number(document.getElementById('tableCount').value);
+  const roundCount=Number(document.getElementById('roundCount').value);
+  const players=normalizePlayers(document.getElementById('playersInput').value);
+  const current=getTournament();
+  const tables=current?.tables?.length ? current.tables : buildTables(players, tableCount);
+  const tournament={name,tableCount,roundCount,players,tables};
+  setTournament(tournament); renderStatus(tournament); alert('Lobby bolo uložené.');
+});
+document.getElementById('generateTables').addEventListener('click',()=>{
+  const name=document.getElementById('tournamentName').value.trim()||'Nový turnaj';
+  const tableCount=Number(document.getElementById('tableCount').value);
+  const roundCount=Number(document.getElementById('roundCount').value);
+  const players=normalizePlayers(document.getElementById('playersInput').value);
+  if(!players.length){alert('Najprv zadaj hráčov.'); return;}
+  const tournament={name,tableCount,roundCount,players,tables:buildTables(players, tableCount)};
+  setTournament(tournament); renderStatus(tournament); window.location.href='tables.html';
+});
+document.getElementById('clearTournament').addEventListener('click',()=>{
+  localStorage.removeItem('csp_tournament');
+  document.getElementById('tournamentName').value='';
+  document.getElementById('playersInput').value='';
+  document.getElementById('tableCount').value='2';
+  document.getElementById('roundCount').value='4';
+  renderStatus(null);
+});
+loadForm();
+</script></body></html>
