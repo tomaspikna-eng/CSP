@@ -1,80 +1,382 @@
-<!DOCTYPE html><html lang="sk"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Turnajový stôl | CardScoresPro</title><style>
-:root{
-  --bg:#000;--panel:#0b0b0b;--panel-2:#111;--line:rgba(255,255,255,.10);--line-2:rgba(255,255,255,.06);
-  --white:#f5f5f5;--muted:rgba(255,255,255,.78);--gold:#f0d98a;--green-1:#5a9a38;--green-2:#2f6724;--turnaj:#70c44e;
-}
-*{box-sizing:border-box;margin:0;padding:0} html,body{min-height:100%}
-body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden}
-a{color:inherit;text-decoration:none} button,input,select,textarea{font:inherit} button{cursor:pointer}
-.page{min-height:100vh;background:#000}.wrap{width:min(1380px,calc(100% - 40px));margin:0 auto}
-.header{padding:18px 0 0}.header-top,.header-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px}
-.header-top{padding-bottom:16px}.header-bottom{padding:0 0 16px;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:14px;min-width:0}.logo{width:42px;height:42px;border-radius:6px;background:#fff;color:#caa23d;display:grid;place-items:center;font-weight:900;font-size:.84rem;flex:0 0 auto}
-.brand-title{color:var(--gold);font-size:clamp(1.6rem,2vw,2.1rem);font-weight:900;letter-spacing:-.04em;white-space:nowrap}
-.auth{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.auth a{font-size:.98rem;font-weight:600;color:rgba(255,255,255,.94);white-space:nowrap}
-.menu{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.menu-link,.btn,.lang{min-height:44px;padding:0 16px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:.95rem;font-weight:700}
-.menu-link{color:rgba(255,255,255,.96);padding-inline:8px}.btn,.lang{border:1px solid var(--line);background:rgba(12,12,12,.72);color:#fff}
-.btn-premium{background:linear-gradient(180deg, rgba(90,154,56,.98), rgba(47,103,36,.98));color:var(--gold);border-color:rgba(212,175,55,.34)}
-.btn-turnaj{color:var(--turnaj);background:rgba(14,10,8,.8);border-color:rgba(212,175,55,.2)} .lang-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.hero{min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;text-align:center;padding:64px 0 88px}
-.hero-box{width:100%;max-width:760px;display:flex;flex-direction:column;align-items:center}
-.headline{color:var(--gold);font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.8rem,4.8vw,4.2rem);line-height:.95;letter-spacing:-.05em;font-weight:700}
-.subline{margin-top:20px;color:var(--muted);font-size:clamp(1.02rem,1.7vw,1.35rem);line-height:1.45;max-width:720px}
-.hero-cta{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.hero-btn{min-height:46px;padding:0 18px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.94rem;font-weight:700;border:1px solid rgba(212,175,55,.34);background:linear-gradient(180deg, rgba(90,154,56,.98), rgba(47,103,36,.98));color:var(--gold)}
-.section{padding:32px 0}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.panel+.panel{margin-top:18px}
-.panel-title{font-size:1.2rem;font-weight:800;color:var(--gold);margin-bottom:12px}.grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.field{display:grid;gap:8px}label{font-size:.9rem;color:var(--muted);font-weight:600}
-input,select,textarea{width:100%;min-height:44px;border-radius:8px;border:1px solid var(--line);background:#080808;color:#fff;padding:0 12px}
-textarea{min-height:100px;padding:12px;resize:vertical}.helper{color:var(--muted);font-size:.88rem}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.list{display:grid;gap:10px}.item{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line-2);background:var(--panel-2);padding:12px 14px;border-radius:10px}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:#080808;color:var(--muted);font-size:.8rem;font-weight:700}
-.table-card{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:16px;display:grid;gap:12px}.table-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.table-name{font-size:1.05rem;font-weight:800}
-.player-chip{border:1px solid var(--line-2);background:var(--panel-2);border-radius:8px;padding:10px 12px}.score-row{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center}.actions-row{display:flex;gap:10px;flex-wrap:wrap}
-.empty{padding:18px;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}.success{color:#98db7d}.footer-note{padding:16px 0 32px;color:rgba(255,255,255,.55);font-size:.88rem}
-@media (max-width:900px){.wrap{width:min(1380px,calc(100% - 24px))}.header-top,.header-bottom{flex-direction:column;align-items:flex-start}.grid-2{grid-template-columns:1fr}.hero{min-height:auto;padding:56px 0 72px}.hero-box{align-items:flex-start;text-align:left}}
-@media (max-width:640px){.menu{display:grid;grid-template-columns:1fr 1fr;width:100%}.menu-link,.btn,.lang{width:100%}.lang-group{display:grid;grid-template-columns:1fr 1fr;width:100%}.grid-3{grid-template-columns:1fr}.score-row{grid-template-columns:1fr}}
-</style></head><body>
-<div class="page"><div class="wrap">
-<header class="header">
-<div class="header-top"><div class="brand"><div class="logo">CP</div><div class="brand-title">CardScoresPro</div></div><div class="auth"><a href="lobby.html">Lobby</a><a href="tables.html">Stoly</a></div></div>
-<div class="header-bottom"><nav class="menu"><a class="menu-link" href="index.html">🏠 Home</a><a class="menu-link" href="lobby.html">Lobby</a><a class="btn btn-turnaj" href="tables.html">🂠 Turnajové stoly</a><div class="lang-group"><a class="lang" href="#">SK</a><a class="lang" href="#">EN</a></div></nav></div>
-</header>
-<section class="section"><div class="grid-2">
-<div class="panel"><div class="panel-title" id="tableTitle">Turnajový stôl</div><div id="playersBox" class="list"></div></div>
-<div class="panel"><div class="panel-title">Zápis kola</div><div id="scoreForm" class="list"></div><div class="actions-row" style="margin-top:14px"><button class="btn btn-premium" id="saveRound">Uložiť kolo</button><a class="btn" href="tables.html">Späť na stoly</a></div></div>
-</div></section>
-<section class="section"><div class="panel"><div class="panel-title">Poradie hráčov</div><div id="rankingBox" class="list"></div></div></section>
-<div class="footer-note">Skóre sa ukladá lokálne. Po obnovení stránky zostane zachované.</div>
-</div></div>
-<script>
-function getTournament(){try{return JSON.parse(localStorage.getItem('csp_tournament')||'null')}catch(e){return null}}
-function setTournament(data){localStorage.setItem('csp_tournament', JSON.stringify(data))}
-function ensureTournament(){const t=getTournament(); if(!t){alert('Turnaj ešte nie je pripravený. Najprv ho vytvor v lobby.'); window.location.href='lobby.html'; return null;} return t;}
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CardScoresPro – Stôl</title>
+  <style>
+    :root {
+      --bg: #05070d;
+      --bg2: #0a101a;
+      --panel: rgba(8, 8, 10, 0.88);
+      --line: rgba(255, 255, 255, 0.12);
+      --line-soft: rgba(255, 255, 255, 0.07);
+      --text: #f5f5f5;
+      --gold: #d8b04b;
+      --ok: #b9ecac;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; min-height: 100%;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.80), rgba(0, 0, 0, 0.90)),
+        radial-gradient(circle at 50% 30%, rgba(216, 176, 75, 0.06), transparent 22%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 48%, var(--bg) 100%);
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .page { min-height: 100vh; padding: 18px; display: flex; align-items: center; justify-content: center; }
+    .tablet-shell {
+      width: min(1280px, 100%); border-radius: 28px; padding: 18px;
+      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow); backdrop-filter: blur(10px);
+    }
+    .app-frame {
+      border-radius: 22px; overflow: hidden;
+      background: linear-gradient(180deg, rgba(9, 10, 14, 0.96), rgba(10, 12, 16, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 18px 22px 14px; border-bottom: 1px solid var(--line-soft);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .back-btn, .icon-btn {
+      width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03); color: var(--text);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem;
+    }
+    .table-title { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 800; letter-spacing: -0.03em; }
+    .game-type { margin-top: 4px; color: var(--gold); font-size: 1.05rem; font-weight: 700; }
+    .content { padding: 18px; display: grid; gap: 18px; }
+    .score-card, .ranking-card, .bottom-tabs {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+    .score-card { overflow: hidden; }
+    .score-scroll { width: 100%; overflow-x: auto; overflow-y: hidden; }
+    .score-grid { min-width: 980px; display: grid; grid-template-columns: 190px repeat(4, 1fr); }
+    .cell {
+      min-height: 74px; border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft);
+      display: flex; align-items: center; justify-content: center; padding: 8px 10px; text-align: center;
+      background: rgba(255, 255, 255, 0.01);
+    }
+    .cell.col-last { border-right: none; }
+    .row-last { border-bottom: none; }
+    .player-head {
+      background: linear-gradient(180deg, rgba(216, 176, 75, 0.88), rgba(158, 121, 35, 0.90));
+      color: #fff; font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 800; letter-spacing: -0.03em; min-height: 68px;
+    }
+    .corner-head { background: transparent; min-height: 68px; }
+    .row-label {
+      justify-content: flex-start; padding-left: 22px; font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+      font-weight: 800; letter-spacing: -0.02em;
+    }
+    .row-label.gold { color: #fff; background: rgba(216, 176, 75, 0.14); }
+    .row-label.total { color: #fff; background: linear-gradient(180deg, rgba(47, 103, 36, 0.82), rgba(29, 72, 22, 0.88)); }
+    .player-header-box { width: 100%; display: grid; gap: 8px; justify-items: center; }
+    .recorder-toggle {
+      display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; font-weight: 700; color: rgba(255, 255, 255, 0.92);
+    }
+    .recorder-toggle input { width: 20px; height: 20px; accent-color: #2ea95a; }
+    .score-input {
+      width: 100%; height: 50px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.22); color: var(--text); text-align: center; font-size: 1.2rem; font-weight: 700; outline: none;
+    }
+    .score-input:focus { border-color: rgba(216, 176, 75, 0.55); box-shadow: 0 0 0 3px rgba(216, 176, 75, 0.12); }
+    .total-cell {
+      background: linear-gradient(180deg, rgba(47, 103, 36, 0.64), rgba(29, 72, 22, 0.80));
+      font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em;
+    }
+    .ranking-card { padding: 16px 18px 18px; }
+    .ranking-title { color: var(--gold); font-size: 1rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.02em; }
+    .ranking-list { display: grid; gap: 0; border-top: 1px solid var(--line-soft); }
+    .ranking-row {
+      display: grid; grid-template-columns: 52px 1fr 140px 140px; gap: 12px; align-items: center;
+      padding: 12px 8px; border-bottom: 1px solid var(--line-soft); font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+    }
+    .ranking-row:last-child { border-bottom: none; }
+    .rank-num { color: var(--gold); font-weight: 900; }
+    .rank-name { font-weight: 800; }
+    .rank-score, .rank-score-right { text-align: right; font-weight: 800; }
+    .negative { color: var(--ok); }
+    .positive { color: #ff9b9b; }
+    .bottom-tabs { padding: 10px; display: flex; justify-content: center; }
+    .tabs-wrap {
+      display: inline-flex; gap: 6px; padding: 4px; border-radius: 999px; border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03); flex-wrap: wrap; justify-content: center;
+    }
+    .tab-btn {
+      min-width: 108px; min-height: 44px; padding: 0 16px; border: none; border-radius: 999px;
+      background: transparent; color: rgba(255, 255, 255, 0.78); font-size: 1rem; font-weight: 800;
+    }
+    .tab-btn.active {
+      background: linear-gradient(180deg, rgba(90, 154, 56, 0.98), rgba(47, 103, 36, 0.98));
+      color: #fff; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+    }
+    @media (max-width: 980px) {
+      .page { padding: 10px; }
+      .tablet-shell { padding: 10px; border-radius: 22px; }
+      .content { padding: 14px; }
+      .ranking-row { grid-template-columns: 44px 1fr 90px 90px; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="tablet-shell">
+      <div class="app-frame">
+        <div class="topbar">
+          <div class="topbar-left">
+            <button class="back-btn" type="button" onclick="goBack()">←</button>
+            <div class="title-wrap">
+              <div class="table-title" id="tableTitle">Stôl 1</div>
+              <div class="game-type" id="gameType">Typ hry: Žolíky</div>
+            </div>
+          </div>
+          <button class="icon-btn" type="button" onclick="saveRound()">✓</button>
+        </div>
 
-const params=new URLSearchParams(window.location.search);
-const tableId=Number(params.get('table')||1);
-const tournament=ensureTournament();
-function getTable(){return tournament.tables.find(t=>t.id===tableId)}
-function render(){
-  const table=getTable();
-  if(!table){alert('Stôl sa nenašiel.'); window.location.href='tables.html'; return;}
-  document.getElementById('tableTitle').textContent=`${table.name} • ${tournament.name}`;
-  const scores={}; table.players.forEach(p=>scores[p]=0);
-  table.rounds.forEach(round=>Object.entries(round.scores).forEach(([name,value])=>scores[name]=(scores[name]||0)+Number(value||0)));
-  document.getElementById('playersBox').innerHTML=table.players.map(player=>`<div class="item"><span>${player}</span><span class="badge">Skóre: ${scores[player]||0}</span></div>`).join('');
-  document.getElementById('scoreForm').innerHTML=table.players.map(player=>`<div class="score-row"><label>${player}</label><input type="number" step="1" value="0" data-player="${player}"/></div>`).join('');
-  const ranking=[...table.players].map(name=>({name,score:scores[name]||0})).sort((a,b)=>b.score-a.score);
-  document.getElementById('rankingBox').innerHTML=ranking.map((row,idx)=>`<div class="item"><strong>${idx+1}. ${row.name}</strong><span class="${idx===0?'success':''}">${row.score}</span></div>`).join('');
-}
-document.getElementById('saveRound').addEventListener('click',()=>{
-  const table=getTable();
-  const inputs=[...document.querySelectorAll('#scoreForm input[data-player]')];
-  const round={scores:{}};
-  inputs.forEach(input=>round.scores[input.dataset.player]=Number(input.value||0));
-  table.rounds.push(round);
-  setTournament(tournament);
-  render();
-  alert('Kolo bolo uložené.');
-});
-if(tournament) render();
-</script></body></html>
+        <div class="content">
+          <section class="score-card">
+            <div class="score-scroll">
+              <div class="score-grid" id="scoreGrid"></div>
+            </div>
+          </section>
+
+          <section class="ranking-card">
+            <div class="ranking-title">Poradie stola</div>
+            <div class="ranking-list" id="rankingList"></div>
+          </section>
+
+          <section class="bottom-tabs">
+            <div class="tabs-wrap" id="tableTabs"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'csp_tournament';
+    const ROUND_COUNT = 4;
+
+    const defaultTournament = {
+      name: 'Žolíkový večer',
+      gameType: 'Žolíky',
+      scoreMode: 'lowest_wins',
+      tables: [
+        { id: 1, name: 'Stôl 1', recorder: 'Peter', players: ['Peter', 'Jano', 'Milan', 'Robo'],
+          rounds: [
+            { 'Peter': 0, 'Jano': 0, 'Milan': 0, 'Robo': 0 },
+            { 'Peter': -15, 'Jano': -5, 'Milan': 8, 'Robo': 12 },
+            { 'Peter': -10, 'Jano': -4, 'Milan': 4, 'Robo': 16 },
+            { 'Peter': -20, 'Jano': -3, 'Milan': 6, 'Robo': 26 }
+          ]
+        },
+        { id: 2, name: 'Stôl 2', recorder: 'Adam', players: ['Adam', 'Miro', 'Fero', 'Ivan'],
+          rounds: [
+            { 'Adam': 5, 'Miro': -10, 'Fero': 12, 'Ivan': 8 },
+            { 'Adam': 0, 'Miro': -8, 'Fero': 9, 'Ivan': 6 },
+            { 'Adam': -5, 'Miro': -6, 'Fero': 8, 'Ivan': 10 },
+            { 'Adam': -6, 'Miro': -4, 'Fero': 7, 'Ivan': 12 }
+          ]
+        },
+        { id: 3, name: 'Stôl 3', recorder: 'Roman', players: ['Roman', 'Lukáš', 'Jozef', 'Palo'],
+          rounds: [
+            { 'Roman': 0, 'Lukáš': 0, 'Jozef': 0, 'Palo': 0 },
+            { 'Roman': 3, 'Lukáš': -4, 'Jozef': 9, 'Palo': 11 },
+            { 'Roman': -6, 'Lukáš': -6, 'Jozef': 7, 'Palo': 12 },
+            { 'Roman': -8, 'Lukáš': -7, 'Jozef': 9, 'Palo': 14 }
+          ]
+        },
+        { id: 4, name: 'Stôl 4', recorder: 'Marek', players: ['Marek', 'Ondrej', 'Karol', 'Tibor'],
+          rounds: [
+            { 'Marek': 1, 'Ondrej': -2, 'Karol': 3, 'Tibor': 4 },
+            { 'Marek': -4, 'Ondrej': -1, 'Karol': 5, 'Tibor': 6 },
+            { 'Marek': -3, 'Ondrej': -2, 'Karol': 4, 'Tibor': 8 },
+            { 'Marek': -5, 'Ondrej': -1, 'Karol': 6, 'Tibor': 9 }
+          ]
+        }
+      ]
+    };
+
+    function getTournament() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultTournament));
+          return structuredClone(defaultTournament);
+        }
+        return JSON.parse(raw);
+      } catch (e) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultTournament));
+        return structuredClone(defaultTournament);
+      }
+    }
+
+    function setTournament(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    let tableId = Number(params.get('table') || 1);
+    let tournament = getTournament();
+
+    function getTable() {
+      return tournament.tables.find(t => t.id === tableId) || tournament.tables[0];
+    }
+
+    function computeTotals(table) {
+      const totals = Object.fromEntries(table.players.map(p => [p, 0]));
+      table.rounds.forEach(round => {
+        table.players.forEach(player => {
+          totals[player] += Number(round[player] || 0);
+        });
+      });
+      return totals;
+    }
+
+    function getSortedRanking(table, totals) {
+      const arr = table.players.map(player => ({ name: player, score: totals[player] || 0 }));
+      if (tournament.scoreMode === 'lowest_wins') arr.sort((a, b) => a.score - b.score);
+      else arr.sort((a, b) => b.score - a.score);
+      return arr;
+    }
+
+    function saveRound() {
+      const table = getTable();
+      const inputs = document.querySelectorAll('[data-round][data-player]');
+      inputs.forEach(input => {
+        const roundIndex = Number(input.dataset.round);
+        const player = input.dataset.player;
+        table.rounds[roundIndex][player] = Number(input.value || 0);
+      });
+      setTournament(tournament);
+      render();
+    }
+
+    function setRecorder(playerName) {
+      const table = getTable();
+      table.recorder = playerName;
+      setTournament(tournament);
+      render();
+    }
+
+    function renderTabs() {
+      const wrap = document.getElementById('tableTabs');
+      wrap.innerHTML = '';
+      tournament.tables.forEach(table => {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn' + (table.id === tableId ? ' active' : '');
+        btn.type = 'button';
+        btn.textContent = table.name;
+        btn.addEventListener('click', () => {
+          tableId = table.id;
+          const next = new URL(window.location.href);
+          next.searchParams.set('table', String(tableId));
+          history.replaceState({}, '', next);
+          render();
+        });
+        wrap.appendChild(btn);
+      });
+    }
+
+    function renderGrid() {
+      const table = getTable();
+      const totals = computeTotals(table);
+      const grid = document.getElementById('scoreGrid');
+      grid.innerHTML = '';
+
+      const addCell = (html, className = '') => {
+        const cell = document.createElement('div');
+        cell.className = 'cell ' + className;
+        cell.innerHTML = html;
+        grid.appendChild(cell);
+      };
+
+      addCell('', 'corner-head');
+      table.players.forEach((player, index) => {
+        addCell(`
+          <div class="player-header-box">
+            <div>${player}</div>
+            <label class="recorder-toggle">
+              <input type="checkbox" ${table.recorder === player ? 'checked' : ''} data-recorder="${player}" />
+              <span>${table.recorder === player ? 'zapisovateľ' : ''}</span>
+            </label>
+          </div>
+        `, 'player-head ' + (index === table.players.length - 1 ? 'col-last' : ''));
+      });
+
+      addCell('MENO', 'row-label gold');
+      table.players.forEach((player, index) => {
+        addCell('—', index === table.players.length - 1 ? 'col-last' : '');
+      });
+
+      for (let r = 0; r < ROUND_COUNT; r++) {
+        addCell(`${r + 1} kolo`, 'row-label');
+        table.players.forEach((player, index) => {
+          const value = table.rounds[r]?.[player] ?? 0;
+          addCell(`<input class="score-input" type="number" value="${value}" data-round="${r}" data-player="${player}" />`, index === table.players.length - 1 ? 'col-last' : '');
+        });
+      }
+
+      addCell('SPOLU', 'row-label total row-last');
+      table.players.forEach((player, index) => {
+        addCell(String(totals[player]), 'total-cell row-last ' + (index === table.players.length - 1 ? 'col-last' : ''));
+      });
+
+      document.querySelectorAll('[data-recorder]').forEach(el => {
+        el.addEventListener('change', () => setRecorder(el.dataset.recorder));
+      });
+      document.querySelectorAll('[data-round][data-player]').forEach(el => {
+        el.addEventListener('change', saveRound);
+      });
+    }
+
+    function renderRanking() {
+      const table = getTable();
+      const totals = computeTotals(table);
+      const ranking = getSortedRanking(table, totals);
+      const list = document.getElementById('rankingList');
+      list.innerHTML = '';
+
+      ranking.forEach((row, idx) => {
+        const signClass = row.score < 0 ? 'negative' : row.score > 0 ? 'positive' : '';
+        const item = document.createElement('div');
+        item.className = 'ranking-row';
+        item.innerHTML = `
+          <div class="rank-num">${idx + 1}</div>
+          <div class="rank-name">${row.name}</div>
+          <div class="rank-score ${signClass}">${row.score < 0 ? '(' + row.score + ')' : row.score}</div>
+          <div class="rank-score-right ${signClass}">${row.score}</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function renderHeader() {
+      const table = getTable();
+      document.getElementById('tableTitle').textContent = table.name;
+      document.getElementById('gameType').textContent = `Typ hry: ${tournament.gameType}`;
+    }
+
+    function render() {
+      tournament = getTournament();
+      renderHeader();
+      renderGrid();
+      renderRanking();
+      renderTabs();
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    render();
+  </script>
+</body>
+</html>
