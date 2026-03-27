@@ -3,304 +3,772 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CardScoresPro</title>
+  <title>CardScoresPro – Turnajový manažér</title>
+  <meta name="description" content="CardScoresPro je moderný turnajový manažér pre hráčov, organizátorov a kluby. Vytváraj turnaje, zapisuj výsledky a spravuj priebeh turnaja prehľadne online." />
   <style>
-    :root{
-      --line:rgba(255,255,255,.10);
-      --gold:#d8b04b;
-      --white:#ffffff;
-      --muted:rgba(255,255,255,.78);
-      --green1:#5a9a38;
-      --green2:#2f6724;
-      --panel:rgba(9,9,9,.78);
-      --panel-soft:rgba(15,15,15,.74);
+    :root {
+      --bg: #070707;
+      --panel: #111111;
+      --panel-2: #161616;
+      --text: #f5f5f5;
+      --muted: #b8b8b8;
+      --gold: #d4af37;
+      --gold-soft: rgba(212, 175, 55, 0.16);
+      --green: #1db954;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 20px;
+      --max: 1200px;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--white);
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, Arial, Helvetica, sans-serif;
       background:
-        linear-gradient(rgba(0,0,0,.82), rgba(0,0,0,.92)),
-        url('keyboard-bg.png') center/cover no-repeat fixed;
-      min-height:100vh;
+        radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 28%),
+        linear-gradient(180deg, #090909 0%, #060606 100%);
+      color: var(--text);
+      line-height: 1.5;
     }
-    a{text-decoration:none;color:inherit}
-    button{font:inherit;cursor:pointer}
-    .wrap{width:min(1380px,calc(100% - 32px));margin:0 auto}
-    .header{padding:22px 0 0}
-    .header-top,.header-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px}
-    .header-top{padding-bottom:16px}
-    .header-bottom{padding:0 0 18px;border-bottom:1px solid var(--line)}
-    .brand-link{display:flex;align-items:center;gap:14px}
-    .logo-mark{
-      min-width:76px;height:44px;padding:0 12px;border-radius:12px;
-      display:inline-flex;align-items:center;justify-content:center;
-      background:rgba(0,0,0,.38);border:1px solid rgba(216,176,75,.34);
-      color:var(--gold);font-size:1.48rem;font-weight:900;letter-spacing:-.07em
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
-    .brand-title{font-size:2.15rem;font-weight:900;letter-spacing:-.05em}
-    .brand-title .gold{color:var(--gold)} .brand-title .white{color:#fff}
-    .menu{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-    .menu-link,.btn,.lang{
-      min-height:44px;padding:0 16px;border-radius:10px;
-      display:inline-flex;align-items:center;justify-content:center;
-      white-space:nowrap;font-size:.96rem;font-weight:800
+
+    img {
+      max-width: 100%;
+      display: block;
     }
-    .menu-link{padding-inline:8px}
-    .btn,.lang{border:1px solid var(--line);background:rgba(8,8,8,.42);color:#fff;backdrop-filter:blur(6px)}
-    .btn-premium{background:linear-gradient(180deg, rgba(90,154,56,.98), rgba(47,103,36,.98));border-color:rgba(216,176,75,.28)}
-    .btn-login{background:rgba(12,16,28,.74)}
-    .btn-register{background:linear-gradient(180deg,#d8b04b,#bc942d);color:#111;border-color:rgba(216,176,75,.4)}
-    .lang-group{display:flex;gap:10px}
-    .hero{
-      min-height:calc(100vh - 120px);
-      display:flex;align-items:center;justify-content:center;text-align:center;
-      padding:72px 0 86px
+
+    .container {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
     }
-    .hero-box{max-width:940px}
-    .hero-title{font-size:clamp(3.1rem,6vw,6.2rem);line-height:.93;font-weight:900;letter-spacing:-.07em}
-    .hero-title .gold{color:var(--gold)} .hero-title .white{color:#fff}
-    .hero-copy{margin-top:18px;font-size:clamp(1.08rem,1.9vw,1.65rem);color:var(--muted)}
-    .hero-cta{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-    .hero-btn{
-      min-height:52px;padding:0 24px;border-radius:12px;
-      display:inline-flex;align-items:center;justify-content:center;
-      font-size:1rem;font-weight:800;border:1px solid var(--line)
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(7, 7, 7, 0.82);
+      border-bottom: 1px solid var(--border);
     }
-    .section{padding:30px 0}
-    .section-head{max-width:840px;margin:0 auto 18px;text-align:center}
-    .section-head h2{font-size:clamp(2rem,3vw,3rem);color:var(--gold);letter-spacing:-.04em}
-    .section-head p{margin-top:10px;color:var(--muted);font-size:1.03rem;line-height:1.5}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:18px;padding:20px;backdrop-filter:blur(8px)
+
+    .header-wrap {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
     }
-    .card h3{font-size:1.18rem;color:var(--gold);margin-bottom:10px}
-    .card p{color:var(--muted);line-height:1.6}
-    .preview-box{
-      margin-top:16px;background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
     }
-    .preview-line{
-      display:flex;justify-content:space-between;gap:10px;
-      padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.88)
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.04));
+      color: var(--gold);
+      font-size: 1rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
     }
-    .preview-line:last-child{border-bottom:none}
-    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
-    .price-card{
-      background:var(--panel);border:1px solid var(--line);
-      border-radius:20px;padding:24px;display:flex;flex-direction:column;
-      min-height:470px;backdrop-filter:blur(8px)
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
     }
-    .price-card.pro{border-color:rgba(216,176,75,.35);box-shadow:0 0 0 1px rgba(216,176,75,.14) inset}
-    .price-card.ultra{background:linear-gradient(180deg, rgba(90,154,56,.98), rgba(47,103,36,.98));border-color:rgba(255,255,255,.14)}
-    .plan{font-size:1.35rem;font-weight:900;letter-spacing:-.03em}
-    .price{margin-top:10px;font-size:2.3rem;font-weight:900;letter-spacing:-.05em}
-    .period{color:rgba(255,255,255,.72);font-size:.95rem;margin-top:4px}
-    .ultra .period{color:rgba(255,255,255,.84)}
-    .desc{margin-top:14px;color:var(--muted);line-height:1.55;min-height:88px}
-    .ultra .desc{color:rgba(255,255,255,.92)}
-    .features{margin-top:18px;display:grid;gap:10px}
-    .features div{
-      padding:10px 12px;border-radius:12px;
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.92)
+
+    .brand-text strong {
+      font-size: 1.15rem;
     }
-    .ultra .features div{background:rgba(0,0,0,.18);border-color:rgba(255,255,255,.12)}
-    .price-cta{margin-top:auto;padding-top:18px}
-    .footer-note{padding:18px 0 36px;text-align:center;color:rgba(255,255,255,.56);font-size:.92rem}
-    .modal-backdrop{
-      position:fixed;inset:0;background:rgba(0,0,0,.72);
-      display:none;align-items:center;justify-content:center;padding:20px;z-index:1000
+
+    .brand-text strong .gold {
+      color: var(--gold);
     }
-    .modal-backdrop.open{display:flex}
-    .modal{width:min(460px,100%);background:#0b0b0b;border:1px solid var(--line);border-radius:18px;padding:22px}
-    .modal h3{color:var(--gold);font-size:1.25rem;margin-bottom:10px}
-    .modal p{color:var(--muted);line-height:1.55;margin-bottom:16px}
-    .modal-actions{display:flex;gap:10px;flex-wrap:wrap}
-    @media (max-width:980px){
-      .header-top,.header-bottom{flex-direction:column;align-items:flex-start}
-      .grid-3,.pricing-grid{grid-template-columns:1fr}
-      .hero{min-height:auto;padding:60px 0 76px}
-      .hero-box,.section-head{text-align:left}
-      .section-head{margin:0 0 18px}
+
+    .brand-text span {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
     }
-    @media (max-width:640px){
-      .menu{display:grid;grid-template-columns:1fr 1fr;width:100%}
-      .menu-link,.btn,.lang,.hero-btn{width:100%}
-      .lang-group{display:grid;grid-template-columns:1fr 1fr;width:100%}
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      transition: 0.2s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #061108;
+      box-shadow: 0 8px 24px rgba(29, 185, 84, 0.25);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #15120a;
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.22);
+    }
+
+    .hero {
+      padding: 84px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      border-radius: 999px;
+      color: var(--gold);
+      background: var(--gold-soft);
+      margin-bottom: 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(2.3rem, 5vw, 4.3rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 640px;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mockup {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .mockup-screen {
+      background: linear-gradient(180deg, #151515 0%, #0c0c0c 100%);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .mockup-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+    }
+
+    .mockup-body {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .card p,
+    .list li,
+    .small {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .score-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .score-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .score-item strong {
+      font-size: 0.96rem;
+    }
+
+    .score-item span:last-child {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .feature-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .feature-pill {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+      font-size: 0.92rem;
+      text-align: center;
+    }
+
+    section {
+      padding: 40px 0;
+    }
+
+    .section-head {
+      max-width: 720px;
+      margin-bottom: 24px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-head p {
+      color: var(--muted);
+    }
+
+    .features-grid,
+    .audience-grid,
+    .preview-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .features-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .audience-grid,
+    .preview-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .info-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .info-card .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 16px;
+      color: var(--gold);
+      background: var(--gold-soft);
+      border: 1px solid rgba(212,175,55,0.2);
+      font-weight: 800;
+    }
+
+    .info-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .info-card p {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .preview-card {
+      min-height: 270px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .preview-frame {
+      background: linear-gradient(180deg, #171717, #0d0d0d);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.06);
+      min-height: 160px;
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .bar,
+    .tile,
+    .line {
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .bar {
+      height: 20px;
+      width: 60%;
+    }
+
+    .line {
+      height: 12px;
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .tile {
+      min-height: 54px;
+    }
+
+    .cta-block {
+      margin: 40px 0 10px;
+    }
+
+    .cta-panel {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 28px;
+      border-radius: 24px;
+      border: 1px solid rgba(212,175,55,0.22);
+      background: linear-gradient(135deg, rgba(212,175,55,0.11), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow);
+    }
+
+    .cta-panel h2 {
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
+      margin-bottom: 10px;
+    }
+
+    .cta-panel p {
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0 40px;
+      color: var(--muted);
+    }
+
+    .footer-wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.92rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .features-grid,
+      .audience-grid,
+      .preview-grid,
+      .panel-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-panel {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header-wrap {
+        flex-wrap: wrap;
+        padding: 12px 0;
+      }
+
+      .header-actions {
+        width: 100%;
+      }
+
+      .header-actions .btn {
+        flex: 1;
+      }
+
+      .hero {
+        padding-top: 54px;
+      }
+
+      .feature-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        min-height: 46px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="wrap">
-      <header class="header">
-        <div class="header-top">
-          <a class="brand-link" href="index.html">
-            <div class="logo-mark">CSP</div>
-            <div class="brand-title"><span class="gold">CardScores</span><span class="white">Pro</span></div>
-          </a>
-
-          <div class="menu">
-            <a class="menu-link" href="index.html">Home</a>
-            <a class="menu-link" href="#about">O nás</a>
-            <a class="btn btn-premium" href="#pricing">Premium</a>
-            <a class="btn btn-login" href="lobby.html">Nový turnaj</a>
-            <button class="btn btn-login" id="loginBtn" type="button">Prihlásiť</button>
-            <button class="btn btn-register" id="registerBtn" type="button">Registrovať</button>
-            <div class="lang-group">
-              <a class="lang" href="#">SK</a>
-              <a class="lang" href="#">EN</a>
-            </div>
-          </div>
+  <header class="site-header">
+    <div class="container header-wrap">
+      <a href="#top" class="brand" aria-label="CardScoresPro domov">
+        <div class="brand-mark">CSP</div>
+        <div class="brand-text">
+          <strong><span class="gold">CardScores</span>Pro</strong>
+          <span>Turnajový manažér</span>
         </div>
-        <div class="header-bottom"></div>
-      </header>
+      </a>
 
-      <main class="hero">
-        <div class="hero-box">
-          <h1 class="hero-title"><span class="gold">CardScores</span><span class="white">Pro</span></h1>
-          <p class="hero-copy">Profesionálna správa turnajov kartových hier.</p>
-          <div class="hero-cta">
-            <a class="hero-btn btn-login" href="lobby.html">Vytvoriť turnaj</a>
-            <button class="hero-btn btn-login" id="heroLoginBtn" type="button">Prihlásiť</button>
-            <button class="hero-btn btn-register" id="heroRegisterBtn" type="button">Registrovať</button>
-          </div>
-        </div>
-      </main>
-
-      <section class="section" id="about">
-        <div class="section-head">
-          <h2>Ako funguje CardScoresPro</h2>
-          <p>Od vytvorenia turnaja až po finálne poradie. CardScoresPro spája lobby, turnajové stoly a prehľadné zapisovanie výsledkov do jedného systému.</p>
-        </div>
-
-        <div class="grid-3">
-          <article class="card">
-            <h3>Lobby turnaja</h3>
-            <p>Organizátor pripraví turnaj, nastaví počet stolov, pridá hráčov a pripraví štart celej udalosti na pár kliknutí.</p>
-            <div class="preview-box">
-              <div class="preview-line"><span>Názov turnaja</span><strong>Žolíkový večer</strong></div>
-              <div class="preview-line"><span>Počet stolov</span><strong>2</strong></div>
-              <div class="preview-line"><span>Počet kôl</span><strong>4</strong></div>
-            </div>
-          </article>
-
-          <article class="card">
-            <h3>Turnajové stoly</h3>
-            <p>Každý stôl má jasný prehľad hráčov, zapisovanie kola a aktuálne poradie. Systém je navrhnutý tak, aby bol rýchly a čitateľný aj počas živého turnaja.</p>
-            <div class="preview-box">
-              <div class="preview-line"><span>Stôl 1</span><strong>4 hráči</strong></div>
-              <div class="preview-line"><span>Zápis kola</span><strong>aktívny</strong></div>
-              <div class="preview-line"><span>Poradie</span><strong>live</strong></div>
-            </div>
-          </article>
-
-          <article class="card">
-            <h3>Kartové hry</h3>
-            <p>CardScoresPro je pripravený pre rôzne formáty kartových turnajov, napríklad žolíky, mariáš a ďalšie spoločenské a turnajové hry.</p>
-            <div class="preview-box">
-              <div class="preview-line"><span>Žolíky</span><strong>podpora</strong></div>
-              <div class="preview-line"><span>Mariáš</span><strong>podpora</strong></div>
-              <div class="preview-line"><span>Ďalšie hry</span><strong>postupne</strong></div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="pricing">
-        <div class="section-head">
-          <h2>Vyber si verziu</h2>
-          <p>Začni bez registrácie, odomkni organizátorské nástroje cez Pro alebo prejdi na Ultra pre ligy, podniky a väčšie systémy.</p>
-        </div>
-
-        <div class="pricing-grid">
-          <article class="price-card">
-            <div class="plan">Free</div>
-            <div class="price">0 €</div>
-            <div class="period">bez mesačného poplatku</div>
-            <p class="desc">Pre hráčov, zapisovateľov pri stole a každého, kto chce používať základné funkcie bez registrácie.</p>
-            <div class="features">
-              <div>zapisovanie skóre pri stole</div>
-              <div>sledovanie priebehu turnaja</div>
-              <div>zobrazenie poradia hráčov</div>
-              <div>prístup k verejným turnajom</div>
-              <div>základná história výsledkov</div>
-            </div>
-            <div class="price-cta">
-              <a class="btn btn-login" href="lobby.html">Používať bez registrácie</a>
-            </div>
-          </article>
-
-          <article class="price-card pro">
-            <div class="plan">Pro</div>
-            <div class="price">4,99 €</div>
-            <div class="period">/ mesiac</div>
-            <p class="desc">Pre organizátorov, kluby a podniky, ktoré chcú profesionálne riadiť turnaje a mať všetko uložené pod vlastným účtom.</p>
-            <div class="features">
-              <div>vytváranie turnajov</div>
-              <div>správa lobby hráčov</div>
-              <div>riadenie stolov</div>
-              <div>história turnajov</div>
-              <div>profil hráčov</div>
-              <div>export výsledkov</div>
-              <div>viac aktívnych turnajov naraz</div>
-            </div>
-            <div class="price-cta">
-              <button class="btn btn-register plan-register" type="button">Aktivovať Pro</button>
-            </div>
-          </article>
-
-          <article class="price-card ultra">
-            <div class="plan">Ultra</div>
-            <div class="price">49 €</div>
-            <div class="period">/ mesiac</div>
-            <p class="desc">Pre ligy, väčšie organizácie a siete podnikov, ktoré potrebujú vyšší servis, pokročilé nástroje a širšie možnosti správy.</p>
-            <div class="features">
-              <div>sezóny a ligové systémy</div>
-              <div>globálne rebríčky hráčov</div>
-              <div>multi-admin prístup</div>
-              <div>pokročilé štatistiky</div>
-              <div>white-label možnosti</div>
-              <div>priorita podpory</div>
-              <div>budúce API rozhranie</div>
-            </div>
-            <div class="price-cta">
-              <button class="btn btn-login plan-register" type="button">Aktivovať Ultra</button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <div class="footer-note">Preview verzia: vytvorenie a správa turnaja funguje lokálne bez loginu a bez databázy.</div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="previewModal">
-    <div class="modal">
-      <h3>Preview verzia</h3>
-      <p>Prihlásenie, registrácia a platené plány budú nasadené neskôr. Táto verzia slúži ako funkčný preview web. Vytvorenie turnaja funguje lokálne cez tlačidlo „Vytvoriť turnaj“.</p>
-      <div class="modal-actions">
-        <a class="btn btn-login" href="lobby.html">Prejsť do lobby</a>
-        <button class="btn" type="button" id="closeModalBtn">Zavrieť</button>
+      <div class="header-actions">
+        <a href="#preview" class="btn btn-outline">Ukážka</a>
+        <a href="#login" class="btn btn-outline">Prihlásenie</a>
+        <a href="#register" class="btn btn-primary">Registrácia</a>
       </div>
     </div>
-  </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Moderné turnaje bez chaosu</div>
+          <h1>Spravuj turnaje moderne a prehľadne.</h1>
+          <p>
+            CardScoresPro je turnajový manažér pre hráčov, organizátorov a kluby.
+            Vytvor turnaj, zapisuj výsledky a sleduj priebeh turnaja na jednom mieste.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#register" class="btn btn-primary">Vytvoriť turnaj</a>
+            <a href="#preview" class="btn btn-gold">Pozrieť ukážku</a>
+          </div>
+
+          <div class="hero-meta">
+            <span>• Pre hráčov</span>
+            <span>• Pre organizátorov</span>
+            <span>• Pre kluby</span>
+          </div>
+        </div>
+
+        <div class="mockup" aria-label="Ukážka dashboardu CardScoresPro">
+          <div class="mockup-screen">
+            <div class="mockup-top">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <div>cardscorespro – Turnajový manažér</div>
+            </div>
+
+            <div class="mockup-body">
+              <div class="panel-row">
+                <div class="card">
+                  <h3>Aktívny turnaj</h3>
+                  <p>Žolíkový večer • 24 hráčov • 6 stolov</p>
+                  <div class="score-list">
+                    <div class="score-item"><strong>Stôl 1</strong><span>4 hráči</span><span>2. kolo</span></div>
+                    <div class="score-item"><strong>Stôl 2</strong><span>4 hráči</span><span>2. kolo</span></div>
+                    <div class="score-item"><strong>Stôl 3</strong><span>4 hráči</span><span>1. kolo</span></div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <h3>Rýchle akcie</h3>
+                  <div class="feature-strip">
+                    <div class="feature-pill">Nový turnaj</div>
+                    <div class="feature-pill">Výsledky</div>
+                    <div class="feature-pill">Lobby</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-row">
+                <div class="card">
+                  <h3>Poradie hráčov</h3>
+                  <div class="score-list">
+                    <div class="score-item"><strong>1. Ján Novák</strong><span>12 bodov</span><span>-45</span></div>
+                    <div class="score-item"><strong>2. Peter Hrivnák</strong><span>11 bodov</span><span>-39</span></div>
+                    <div class="score-item"><strong>3. Milan Varga</strong><span>10 bodov</span><span>-24</span></div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <h3>Stav systému</h3>
+                  <p class="small">Prehľad turnajov, zapisovanie výsledkov a kontrola priebehu v reálnom čase.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-head">
+          <h2>Čo CardScoresPro rieši</h2>
+          <p>
+            Jasný základ produktu pre prvého návštevníka. Bez zbytočných vrstiev, bez technického chaosu, bez nejasného vstupu.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <article class="info-card">
+            <div class="icon">01</div>
+            <h3>Správa turnajov</h3>
+            <p>Vytvorenie turnaja, nastavenie hráčov, formátu a základnej organizácie na jednom mieste.</p>
+          </article>
+
+          <article class="info-card">
+            <div class="icon">02</div>
+            <h3>Zapisovanie výsledkov</h3>
+            <p>Prehľadné zapisovanie skóre počas turnaja bez potreby papierov a chaotických prepisov.</p>
+          </article>
+
+          <article class="info-card">
+            <div class="icon">03</div>
+            <h3>Prehľadný priebeh turnaja</h3>
+            <p>Hráči aj organizátor vidia stav turnaja, poradie, stoly a priebeh v jednoduchej štruktúre.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview">
+      <div class="container">
+        <div class="section-head">
+          <h2>Ukážka budúcich sekcií</h2>
+          <p>
+            Táto prvá verzia root stránky predáva smer produktu. Neskôr sem doplníš reálne screenshoty z lobby, zapisovania výsledkov a správy turnaja.
+          </p>
+        </div>
+
+        <div class="preview-grid">
+          <article class="info-card preview-card">
+            <div>
+              <h3>Lobby turnaja</h3>
+              <p>Priestor pre stav turnaja, počty stolov, hráčov a základné informácie pred spustením.</p>
+            </div>
+            <div class="preview-frame">
+              <div class="bar"></div>
+              <div class="tile-grid">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="info-card preview-card">
+            <div>
+              <h3>Zapisovanie výsledkov</h3>
+              <p>Ukážka rozhrania na zapisovanie skóre, poradia hráčov a priebehu jednotlivých kôl.</p>
+            </div>
+            <div class="preview-frame">
+              <div class="bar" style="width: 48%;"></div>
+              <div class="line"></div>
+              <div class="line"></div>
+              <div class="line"></div>
+              <div class="line" style="width: 78%;"></div>
+            </div>
+          </article>
+
+          <article class="info-card preview-card">
+            <div>
+              <h3>Výsledky a poradie</h3>
+              <p>Rýchly prehľad poradia, hráčov a finálneho stavu turnaja po ukončení.</p>
+            </div>
+            <div class="preview-frame">
+              <div class="bar" style="width: 55%;"></div>
+              <div class="score-list">
+                <div class="score-item"><strong>1. miesto</strong><span>-42</span></div>
+                <div class="score-item"><strong>2. miesto</strong><span>-31</span></div>
+                <div class="score-item"><strong>3. miesto</strong><span>-17</span></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="for-whom">
+      <div class="container">
+        <div class="section-head">
+          <h2>Pre koho je CardScoresPro</h2>
+          <p>
+            Produkt musí byť zrozumiteľný hneď pri prvom otvorení. Preto táto sekcia jasne definuje používateľa.
+          </p>
+        </div>
+
+        <div class="audience-grid">
+          <article class="info-card">
+            <div class="icon">H</div>
+            <h3>Hráči</h3>
+            <p>Rýchly prehľad turnaja, poradia, stolov a priebežných výsledkov bez zbytočného hľadania informácií.</p>
+          </article>
+
+          <article class="info-card">
+            <div class="icon">O</div>
+            <h3>Organizátori</h3>
+            <p>Kontrola nad turnajom, jednoduchšie zapisovanie priebehu a menej manuálnej administratívy.</p>
+          </article>
+
+          <article class="info-card">
+            <div class="icon">K</div>
+            <h3>Kluby</h3>
+            <p>Modernejší dojem, lepšia prezentácia turnajov a profesionálnejšie fungovanie voči hráčom aj partnerom.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-block">
+      <div class="container">
+        <div class="cta-panel">
+          <div>
+            <h2>Začni s prvým turnajom.</h2>
+            <p>
+              Toto je prvá verzia root stránky pripravenej na GitHub. Po schválení môže nasledovať druhá verzia s reálnymi screenshotmi a prepojením na ďalšie sekcie produktu.
+            </p>
+          </div>
+
+          <div class="hero-actions" style="margin-bottom: 0;">
+            <a href="#register" class="btn btn-primary">Vytvoriť turnaj</a>
+            <a href="#login" class="btn btn-outline">Prihlásenie</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <div>© <span id="year"></span> CardScoresPro</div>
+      <div class="footer-links">
+        <a href="#features">Funkcie</a>
+        <a href="#preview">Ukážka</a>
+        <a href="#for-whom">Pre koho</a>
+        <a href="#login">Prihlásenie</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    const modal = document.getElementById('previewModal');
-    const openModal = () => modal.classList.add('open');
-    const closeModal = () => modal.classList.remove('open');
-    document.getElementById('loginBtn').addEventListener('click', openModal);
-    document.getElementById('registerBtn').addEventListener('click', openModal);
-    document.getElementById('heroLoginBtn').addEventListener('click', openModal);
-    document.getElementById('heroRegisterBtn').addEventListener('click', openModal);
-    document.querySelectorAll('.plan-register').forEach(btn => btn.addEventListener('click', openModal));
-    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
