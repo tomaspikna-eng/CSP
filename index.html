@@ -717,6 +717,125 @@ button,input,select{font:inherit}
   </div>
 </section>
 
+
+<!-- ══ MAGAZÍN NÁHĽADY ══ -->
+<section class="panel">
+  <div class="section-head" style="margin-bottom:20px">
+    <div>
+      <h2 class="section-title">Z magazínu</h2>
+      <p>Najnovšie články zo sveta kulečníku, šípok a bowlingu</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="magTabsBar">
+      <button class="mag-tab active" data-sport="all" onclick="magSetSport('all',this)">Všetky</button>
+      <button class="mag-tab" data-sport="billiard" onclick="magSetSport('billiard',this)">🎱 Biliard</button>
+      <button class="mag-tab" data-sport="darts" onclick="magSetSport('darts',this)">🎯 Šípky</button>
+      <button class="mag-tab" data-sport="bowling" onclick="magSetSport('bowling',this)">🎳 Bowling</button>
+    </div>
+  </div>
+  <div id="magGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
+  <div style="text-align:center;margin-top:18px">
+    <a href="./magazin/biliard/" id="magMoreLink"
+       style="display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#aaa;font-size:.85rem;font-weight:700;text-decoration:none">
+      Všetky články →
+    </a>
+  </div>
+</section>
+
+<style>
+.mag-tab{
+  padding:5px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.1);
+  background:transparent;color:#888;font-size:.78rem;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:.15s;
+}
+.mag-tab.active{background:rgba(216,176,75,.1);border-color:rgba(216,176,75,.3);color:#d4a843}
+.mag-card{
+  border:1px solid rgba(255,255,255,.07);border-radius:18px;
+  background:rgba(255,255,255,.02);overflow:hidden;
+  transition:.15s;cursor:pointer;text-decoration:none;display:block;
+}
+.mag-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.12)}
+.mag-card-img{width:100%;height:160px;object-fit:cover;display:block;background:#111}
+.mag-card-body{padding:14px}
+.mag-card-tag{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#d4a843;margin-bottom:6px}
+.mag-card-title{font-size:.95rem;font-weight:700;color:#eee;line-height:1.3;margin-bottom:6px}
+.mag-card-perex{font-size:.8rem;color:#888;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mag-card-sport{font-size:.68rem;color:#666;margin-top:8px}
+.mag-empty{grid-column:1/-1;text-align:center;padding:32px;color:#555;font-size:.88rem}
+</style>
+
+<script>
+(function(){
+  const SB_URL  = "https://gqtbxjkuemggelepkhrl.supabase.co";
+  const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxdGJ4amt1ZW1nZ2VsZXBraHJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNDUzNDMsImV4cCI6MjA5MzcyMTM0M30.sKzCRn_Z1jOUF2y6i1O3MgER5UC6TLGzvVvEXJ9ac0Y";
+  const sb = window.supabase?.createClient(SB_URL, SB_ANON);
+
+  const SPORT_LABELS = {billiard:"🎱 Biliard", darts:"🎯 Šípky", bowling:"🎳 Bowling"};
+  const SPORT_LINKS  = {billiard:"./magazin/biliard/", darts:"./magazin/sipky/", bowling:"./magazin/bowling/"};
+  const CAT_LABELS   = {technika:"Technika",pravidla:"Pravidlá",rebricek:"Rebríček",rozhovor:"Rozhovor",vybavenie:"Vybavenie",reportaz:"Reportáž",novinky:"Novinky"};
+
+  let allArticles = [];
+  let currentSport = "all";
+
+  async function loadMagArticles(){
+    const grid = document.getElementById("magGrid");
+    if(!sb){ grid.innerHTML = '<div class="mag-empty">Magazín nie je dostupný offline.</div>'; return; }
+
+    const { data, error } = await sb
+      .from("articles")
+      .select("id,title,perex,image_url,sport,category,published_at")
+      .eq("status","published")
+      .order("published_at",{ascending:false})
+      .limit(12);
+
+    if(error||!data){ grid.innerHTML = '<div class="mag-empty">Nepodarilo sa načítať články.</div>'; return; }
+    allArticles = data;
+    renderMagGrid();
+  }
+
+  function renderMagGrid(){
+    const grid = document.getElementById("magGrid");
+    const link = document.getElementById("magMoreLink");
+    const filtered = currentSport === "all" ? allArticles : allArticles.filter(a=>a.sport===currentSport);
+
+    // Aktualizuj "Všetky články" link
+    if(currentSport !== "all") link.href = SPORT_LINKS[currentSport]||"./magazin/biliard/";
+    else link.href = "./magazin/biliard/";
+
+    if(!filtered.length){
+      grid.innerHTML = '<div class="mag-empty">Zatiaľ žiadne články.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.slice(0,6).map(a => {
+      const sportLabel = SPORT_LABELS[a.sport]||a.sport;
+      const catLabel   = CAT_LABELS[a.category]||a.category||"";
+      const imgSrc     = a.image_url || "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=70";
+      const href       = SPORT_LINKS[a.sport] || "./magazin/biliard/";
+      return `
+      <a href="${href}" class="mag-card">
+        <img class="mag-card-img" src="${imgSrc}" alt="" loading="lazy"
+             onerror="this.style.background='#1a1a1a';this.style.height='160px'"/>
+        <div class="mag-card-body">
+          <div class="mag-card-tag">${catLabel}</div>
+          <div class="mag-card-title">${a.title||""}</div>
+          <div class="mag-card-perex">${a.perex||""}</div>
+          <div class="mag-card-sport">${sportLabel}</div>
+        </div>
+      </a>`;
+    }).join("");
+  }
+
+  window.magSetSport = function(sport, btn){
+    currentSport = sport;
+    document.querySelectorAll(".mag-tab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    renderMagGrid();
+  };
+
+  loadMagArticles();
+})();
+</script>
+
 <footer class="panel footer">
   <div class="footer-grid">
     <div class="footer-card">
